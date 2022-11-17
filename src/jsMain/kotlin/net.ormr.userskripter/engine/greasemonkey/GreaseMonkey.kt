@@ -45,6 +45,9 @@ public object GreaseMonkey {
     public suspend inline fun <T> getValue(name: String, default: T): T =
         GM.getValue(name, default).await() as T // this should be safe, but should probably verify it
 
+    @GrantGMGetValue
+    public suspend inline fun <T> getValue(name: String): T? = GM.getValue<T>(name).await()
+
     @GrantGMDeleteValue
     public suspend inline fun deleteValue(name: String) {
         GM.deleteValue(name).await()
