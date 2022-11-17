@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.engines.greasemonkey
+package net.ormr.userskripter.engine.greasemonkey
 
 public external interface GMXmlHttpRequestDetails<C> {
     public var url: String

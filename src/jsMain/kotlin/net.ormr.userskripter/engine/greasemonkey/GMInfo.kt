@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.engines.greasemonkey
+package net.ormr.userskripter.engine.greasemonkey
 
 // TODO: we should probably actually disallow the usage of this class if another engine is specified, because this
 //       does differ from TMInfo in some specs, so using this when using tampermonkey could lead to runtime errors

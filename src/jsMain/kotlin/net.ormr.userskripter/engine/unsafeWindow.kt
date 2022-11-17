@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.engines
+package net.ormr.userskripter.engine
 
-import net.ormr.userskripter.engines.greasemonkey.GrantUnsafeWindow
+import net.ormr.userskripter.engine.greasemonkey.GrantUnsafeWindow
 import org.w3c.dom.Window
 
 @RequiresOptIn(message = "Use of 'unsafeWindow' is VERY insecure, and should be AVOIDED whenever possible")

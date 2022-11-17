@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.engines.greasemonkey
+package net.ormr.userskripter.engine.greasemonkey
 
 @RequiresOptIn(message = "Specify 'GM.setValue' for 'grant' in userskripter.metadata in Gradle")
 @Retention(AnnotationRetention.BINARY)

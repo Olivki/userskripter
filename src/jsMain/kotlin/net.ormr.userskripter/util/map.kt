@@ -14,7 +14,21 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.utils
+package net.ormr.userskripter.util
 
-@Suppress("NOTHING_TO_INLINE")
-public inline fun <T> identity(value: T): T = value
+import net.ormr.userskripter.js.Object
+
+public fun <K, V> Map<K, V>.toJsObject(): dynamic {
+    val obj: dynamic = js("({})")
+    for ((key, value) in this) obj[key] = value
+    return obj
+}
+
+// we can't declare dynamic extension functions, so it's a bit uglier
+public fun <K, V> jsObjectToMap(jsObject: dynamic): MutableMap<K, V> {
+    val map = hashMapOf<K, V>()
+    for (entry in Object.entries(jsObject)) {
+        map[entry[0].unsafeCast<K>()] = entry[1].unsafeCast<V>()
+    }
+    return map
+}

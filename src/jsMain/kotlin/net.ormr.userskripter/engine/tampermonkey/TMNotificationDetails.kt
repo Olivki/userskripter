@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.utils
+package net.ormr.userskripter.engine.tampermonkey
 
-import org.w3c.dom.Document
-import org.w3c.dom.Element
+public external interface TMNotificationDetails {
+    public var text: String
+    public var title: String?
+    public var image: String?
+    public var highlight: Boolean
 
-@Suppress("UNCHECKED_CAST")
-public inline fun <T : Element> Document.createElement(
-    localName: String,
-    scope: T.() -> Unit = {},
-): T = (this.createElement(localName) as T).apply(scope)
+    @JsName("silent")
+    public var isSilent: Boolean
+    public var timeout: Double
+
+    @JsName("ondone")
+    public var onDone: (() -> Unit)?
+
+    @JsName("onclick")
+    public var onClick: (() -> Unit)?
+}

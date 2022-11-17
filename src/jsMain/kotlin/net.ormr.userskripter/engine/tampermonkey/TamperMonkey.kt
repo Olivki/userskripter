@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.engines.tampermonkey
+package net.ormr.userskripter.engine.tampermonkey
 
-import net.ormr.userskripter.engines.ScriptEngineTamperMonkey
-import net.ormr.userskripter.engines.greasemonkey.*
+import net.ormr.userskripter.engine.ScriptEngineTamperMonkey
+import net.ormr.userskripter.engine.greasemonkey.*
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLStyleElement
 import org.w3c.dom.Node

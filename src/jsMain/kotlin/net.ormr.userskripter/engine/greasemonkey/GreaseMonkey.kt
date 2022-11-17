@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.engines.greasemonkey
+package net.ormr.userskripter.engine.greasemonkey
 
-import net.ormr.userskripter.engines.ScriptEngineGreaseMonkey
+import net.ormr.userskripter.engine.ScriptEngineGreaseMonkey
 import kotlin.js.Promise
 
 @JsName("GM")

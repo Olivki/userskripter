@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.utils
+package net.ormr.userskripter.engine.tampermonkey
 
-import kotlinx.browser.document
-import org.w3c.dom.Comment
-import org.w3c.dom.Element
-import org.w3c.dom.Node
+public external interface TMOpenInTabResult {
+    @JsName("closed")
+    public val isClosed: Boolean
 
-public inline fun Node.appendComment(data: String): Comment = document.createComment(data).also { appendChild(it) }
+    @JsName("onclose")
+    public var onClose: (() -> Unit)?
 
-@Suppress("UNCHECKED_CAST")
-public inline fun <T : Element> Node.appendNewElement(
-    localName: String,
-    builder: T.() -> Unit = {},
-): T = appendChild((document.createElement(localName) as T).apply(builder)) as T
+    public fun close()
+
+    // TODO: this seems to also be available, but the docs don't mention it, so maybe it should be made nullable
+    //       property instead?
+    public fun focus()
+}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.engines.tampermonkey
+package net.ormr.userskripter.engine.tampermonkey
 
 public external interface TMXmlHttpRequestDetails<C> {
     // one of GET, HEAD, POST

@@ -14,21 +14,7 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.engines.tampermonkey
+package net.ormr.userskripter.util
 
-public external interface TMNotificationDetails {
-    public var text: String
-    public var title: String?
-    public var image: String?
-    public var highlight: Boolean
-
-    @JsName("silent")
-    public var isSilent: Boolean
-    public var timeout: Double
-
-    @JsName("ondone")
-    public var onDone: (() -> Unit)?
-
-    @JsName("onclick")
-    public var onClick: (() -> Unit)?
-}
+@Suppress("NOTHING_TO_INLINE")
+public inline fun <T> identity(value: T): T = value

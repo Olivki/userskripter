@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.engines.tampermonkey
+package net.ormr.userskripter.util
 
-import org.w3c.dom.XMLDocument
+import org.w3c.dom.Document
+import org.w3c.dom.Element
 
-public external interface TMXmlHttpRequestResponse<C> {
-    public val finalUrl: String
-    public val readyState: Short
-    public val status: Int
-    public val statusText: String
-    public val responseHeaders: String
-    public val response: dynamic
-
-    @JsName("responseXML")
-    public val responseXml: XMLDocument?
-    public val responseText: String
-
-    public val context: C
-}
+@Suppress("UNCHECKED_CAST")
+public inline fun <T : Element> Document.createElement(
+    localName: String,
+    scope: T.() -> Unit = {},
+): T = (this.createElement(localName) as T).apply(scope)

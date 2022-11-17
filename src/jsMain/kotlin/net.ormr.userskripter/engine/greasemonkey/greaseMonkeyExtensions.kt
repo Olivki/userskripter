@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.engines.greasemonkey
+package net.ormr.userskripter.engine.greasemonkey
 
-import net.ormr.userskripter.engines.ScriptEngineGreaseMonkey
-import net.ormr.userskripter.engines.greasemonkey.GMXmlHttpRequestDetails.EventHandler
+import net.ormr.userskripter.engine.ScriptEngineGreaseMonkey
+import net.ormr.userskripter.engine.greasemonkey.GMXmlHttpRequestDetails.EventHandler
 import net.ormr.userskripter.js.newJsObject
 
 @GrantGMNotification

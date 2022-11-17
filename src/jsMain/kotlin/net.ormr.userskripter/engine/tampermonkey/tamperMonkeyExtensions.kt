@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.engines.tampermonkey
+package net.ormr.userskripter.engine.tampermonkey
 
 import kotlinx.coroutines.await
-import net.ormr.userskripter.engines.ScriptEngineTamperMonkey
-import net.ormr.userskripter.engines.greasemonkey.GrantGMSetClipboard
-import net.ormr.userskripter.engines.greasemonkey.GrantGMXmlHttpRequest
+import net.ormr.userskripter.engine.ScriptEngineTamperMonkey
+import net.ormr.userskripter.engine.greasemonkey.GrantGMSetClipboard
+import net.ormr.userskripter.engine.greasemonkey.GrantGMXmlHttpRequest
 import net.ormr.userskripter.js.jsObject
 
 // we can't define this in 'TMInfo.Script' because @JsName("run-at") is invalid

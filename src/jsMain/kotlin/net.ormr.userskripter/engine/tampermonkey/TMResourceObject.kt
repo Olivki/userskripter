@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.engines.tampermonkey
+package net.ormr.userskripter.engine.tampermonkey
 
-public external interface TMOpenInTabResult {
-    @JsName("closed")
-    public val isClosed: Boolean
+public external interface TMResourceObject {
+    public val name: String
 
-    @JsName("onclose")
-    public var onClose: (() -> Unit)?
+    public val content: String
 
-    public fun close()
+    @JsName("meta")
+    public val mimeType: String
 
-    // TODO: this seems to also be available, but the docs don't mention it, so maybe it should be made nullable
-    //       property instead?
-    public fun focus()
+    public val url: String
 }

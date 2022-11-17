@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.utils
+package net.ormr.userskripter.util
 
-import net.ormr.userskripter.js.Object
+import kotlinx.browser.document
+import org.w3c.dom.Comment
+import org.w3c.dom.Element
+import org.w3c.dom.Node
 
-public fun <K, V> Map<K, V>.toJsObject(): dynamic {
-    val obj: dynamic = js("({})")
-    for ((key, value) in this) obj[key] = value
-    return obj
-}
+public inline fun Node.appendComment(data: String): Comment = document.createComment(data).also { appendChild(it) }
 
-// we can't declare dynamic extension functions, so it's a bit uglier
-public fun <K, V> jsObjectToMap(jsObject: dynamic): MutableMap<K, V> {
-    val map = hashMapOf<K, V>()
-    for (entry in Object.entries(jsObject)) {
-        map[entry[0].unsafeCast<K>()] = entry[1].unsafeCast<V>()
-    }
-    return map
-}
+@Suppress("UNCHECKED_CAST")
+public inline fun <T : Element> Node.appendNewElement(
+    localName: String,
+    builder: T.() -> Unit = {},
+): T = appendChild((document.createElement(localName) as T).apply(builder)) as T

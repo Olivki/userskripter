@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.engines.tampermonkey
+package net.ormr.userskripter.engine.tampermonkey
 
 @RequiresOptIn(message = "Specify 'GM.addStyle' for 'grant' in userskripter.metadata in Gradle")
 public annotation class GrantTMAddStyle

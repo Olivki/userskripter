@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.engines
+package net.ormr.userskripter.engine.greasemonkey
 
-@RequiresOptIn(message = "GreaseMonkey specific feature, specify 'scriptEngine = GREASE_MONKEY' in 'userskripter'")
-public annotation class ScriptEngineGreaseMonkey
+public external interface GMResourceObject {
+    public val name: String
 
-@RequiresOptIn(message = "TamperMonkey specific feature, specify 'scriptEngine = TAMPER_MONKEY' in 'userskripter'")
-public annotation class ScriptEngineTamperMonkey
+    @JsName("mimetype")
+    public val mimeType: String
 
-@RequiresOptIn(message = "The currently defined script-engine is not marked to support 'unsafeWindow'")
-public annotation class UnsafeWindowCompatibleScriptEngine
+    public val url: String
+}
