@@ -4,7 +4,8 @@ plugins {
 }
 
 group = "net.ormr.userskripter"
-version = "0.0.1-dev-6"
+description = "Kotlin/JS library for easily creating userscripts"
+version = "0.1.0"
 
 repositories {
     mavenLocal()
