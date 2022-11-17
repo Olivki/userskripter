@@ -16,58 +16,79 @@
 
 package net.ormr.userskripter.engine.greasemonkey
 
+import kotlinx.coroutines.await
 import net.ormr.userskripter.engine.ScriptEngineGreaseMonkey
-import kotlin.js.Promise
+import net.ormr.userskripter.engine.greasemonkey.PromiseGreaseMonkey as GM
 
-@JsName("GM")
 @ScriptEngineGreaseMonkey
-public external object GreaseMonkey {
-    public val info: GMInfo
-
-    // values
-    @GrantGMSetValue
-    public fun setValue(name: String, value: String): Promise<Nothing?>
+public object GreaseMonkey {
+    public inline val info: GMInfo
+        get() = GM.info
 
     @GrantGMSetValue
-    public fun setValue(name: String, value: Int): Promise<Nothing?>
+    public suspend inline fun setValue(name: String, value: String) {
+        GM.setValue(name, value).await()
+    }
 
     @GrantGMSetValue
-    public fun setValue(name: String, value: Boolean): Promise<Nothing?>
+    public suspend inline fun setValue(name: String, value: Int) {
+        GM.setValue(name, value).await()
+    }
 
+    @GrantGMSetValue
+    public suspend inline fun setValue(name: String, value: Boolean) {
+        GM.setValue(name, value).await()
+    }
+
+    @Suppress("UNCHECKED_CAST")
     @GrantGMGetValue
-    public fun <T> getValue(name: String, default: T = definedExternally): Promise<T?>
+    public suspend inline fun <T> getValue(name: String, default: T): T =
+        GM.getValue(name, default).await() as T // this should be safe, but should probably verify it
 
     @GrantGMDeleteValue
-    public fun deleteValue(name: String): Promise<Nothing?>
+    public suspend inline fun deleteValue(name: String) {
+        GM.deleteValue(name).await()
+    }
 
     @GrantGMListValues
-    public fun listValues(): Promise<Array<String>>
+    public suspend inline fun listValues(): Array<String> = GM.listValues().await()
 
     // resource
     @GrantGMGetResourceUrl
-    public fun getResourceUrl(resourceName: String): Promise<String>
+    public suspend inline fun getResourceUrl(resourceName: String): String = GM.getResourceUrl(resourceName).await()
 
     // other
     @GrantGMNotification
-    public fun notification(
-        text: String,
-        title: String = definedExternally,
-        image: String = definedExternally,
-        onClick: () -> Unit = definedExternally,
-    ): Promise<Nothing?>
+    public suspend inline fun notification(text: String, title: String, image: String, noinline onClick: () -> Unit) {
+        GM.notification(text, title, image, onClick).await()
+    }
 
     @GrantGMNotification
-    public fun notification(options: GMNotificationOptions): Promise<Nothing?>
+    public suspend inline fun notification(options: GMNotificationOptions) {
+        GM.notification(options).await()
+    }
 
     @GrantGMOpenInTab
-    public fun openInTab(url: String, openInBackground: Boolean = definedExternally): Promise<Nothing?>
+    public suspend inline fun openInTab(url: String, openInBackground: Boolean = true) {
+        GM.openInTab(url, openInBackground).await()
+    }
 
     @GrantGMRegisterMenuCommand
-    public fun registerMenuCommand(caption: String, onSelect: () -> Unit, accessKey: Char): Promise<Nothing?>
+    public suspend inline fun registerMenuCommand(
+        caption: String,
+        accessKey: Char,
+        noinline onSelect: () -> Unit,
+    ) {
+        GM.registerMenuCommand(caption, onSelect, accessKey).await()
+    }
 
     @GrantGMSetClipboard
-    public fun setClipboard(text: String): Promise<Nothing?>
+    public suspend inline fun setClipboard(text: String) {
+        GM.setClipboard(text).await()
+    }
 
     @GrantGMXmlHttpRequest
-    public fun <C> xmlHttpRequest(details: GMXmlHttpRequestDetails<C>): Promise<Nothing?>
+    public suspend inline fun <C> xmlHttpRequest(details: GMXmlHttpRequestDetails<C>) {
+        GM.xmlHttpRequest(details).await()
+    }
 }

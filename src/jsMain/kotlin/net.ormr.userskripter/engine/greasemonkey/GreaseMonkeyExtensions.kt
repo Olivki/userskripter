@@ -16,7 +16,6 @@
 
 package net.ormr.userskripter.engine.greasemonkey
 
-import kotlinx.coroutines.await
 import net.ormr.userskripter.engine.ScriptEngineGreaseMonkey
 import net.ormr.userskripter.engine.greasemonkey.GMXmlHttpRequestDetails.EventHandler
 import net.ormr.userskripter.js.UnsafeJs
@@ -26,7 +25,7 @@ import net.ormr.userskripter.js.jsObject
 @GrantGMNotification
 @ScriptEngineGreaseMonkey
 public suspend inline fun GreaseMonkey.notification(builder: GMNotificationOptions.() -> Unit) {
-    notification(jsObject(builder)).await()
+    notification(jsObject(builder))
 }
 
 @GrantGMXmlHttpRequest
@@ -39,7 +38,7 @@ public suspend inline fun GreaseMonkey.xmlHttpRequest(builder: GMXmlHttpRequestD
 @GrantGMXmlHttpRequest
 @ScriptEngineGreaseMonkey
 public suspend inline fun <C> GreaseMonkey.xmlHttpRequest(builder: GMXmlHttpRequestDetails<C>.() -> Unit) {
-    xmlHttpRequest(jsObject(builder)).await()
+    xmlHttpRequest(jsObject(builder))
 }
 
 @OptIn(UnsafeJs::class)
