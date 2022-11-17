@@ -1,7 +1,6 @@
 plugins {
     id("me.him188.maven-central-publish") version "1.0.0-dev-3"
-    kotlin("multiplatform") version "1.7.10"
-    kotlin("plugin.serialization") version "1.7.10"
+    kotlin("multiplatform") version "1.7.21"
 }
 
 group = "net.ormr.userskripter"
@@ -25,7 +24,9 @@ kotlin {
         binaries.library()
         browser {
             commonWebpackConfig {
-                cssSupport.enabled = true
+                cssSupport {
+                    enabled = true
+                }
             }
         }
     }
@@ -37,7 +38,6 @@ kotlin {
             }
 
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-html:0.7.5")
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
             }
         }
