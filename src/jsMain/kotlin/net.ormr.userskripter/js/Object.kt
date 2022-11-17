@@ -23,6 +23,7 @@ package net.ormr.userskripter.js
  *
  * Note that this is ***very*** unsafe, and should only be used if you know what you're doing.
  */
+@UnsafeJs
 public inline fun <T> jsObject(builder: T.() -> Unit): T = newJsObject<T>().apply(builder)
 
 /**
@@ -39,6 +40,7 @@ public inline fun buildObject(builder: dynamic.() -> Unit): dynamic {
  *
  * Note that this is ***very*** unsafe, and should only be used if you know what you're doing.
  */
+@UnsafeJs
 @Suppress("NOTHING_TO_INLINE")
 public inline fun <T> newJsObject(): T = js("({})").unsafeCast<T>()
 

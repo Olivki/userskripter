@@ -16,29 +16,34 @@
 
 package net.ormr.userskripter.engine.greasemonkey
 
+import kotlinx.coroutines.await
 import net.ormr.userskripter.engine.ScriptEngineGreaseMonkey
 import net.ormr.userskripter.engine.greasemonkey.GMXmlHttpRequestDetails.EventHandler
-import net.ormr.userskripter.js.newJsObject
+import net.ormr.userskripter.js.UnsafeJs
+import net.ormr.userskripter.js.jsObject
 
+@OptIn(UnsafeJs::class)
 @GrantGMNotification
 @ScriptEngineGreaseMonkey
-public inline fun GreaseMonkey.notification(builder: GMNotificationOptions.() -> Unit) {
-    notification(newJsObject<GMNotificationOptions>().apply(builder))
+public suspend inline fun GreaseMonkey.notification(builder: GMNotificationOptions.() -> Unit) {
+    notification(jsObject(builder)).await()
 }
 
 @GrantGMXmlHttpRequest
 @ScriptEngineGreaseMonkey
-public inline fun GreaseMonkey.xmlHttpRequest(builder: GMXmlHttpRequestDetails<Nothing?>.() -> Unit) {
+public suspend inline fun GreaseMonkey.xmlHttpRequest(builder: GMXmlHttpRequestDetails<Nothing?>.() -> Unit) {
     xmlHttpRequest<Nothing?>(builder)
 }
 
+@OptIn(UnsafeJs::class)
 @GrantGMXmlHttpRequest
 @ScriptEngineGreaseMonkey
-public inline fun <C> GreaseMonkey.xmlHttpRequest(builder: GMXmlHttpRequestDetails<C>.() -> Unit) {
-    xmlHttpRequest(newJsObject<GMXmlHttpRequestDetails<C>>().apply(builder))
+public suspend inline fun <C> GreaseMonkey.xmlHttpRequest(builder: GMXmlHttpRequestDetails<C>.() -> Unit) {
+    xmlHttpRequest(jsObject(builder)).await()
 }
 
+@OptIn(UnsafeJs::class)
 @ScriptEngineGreaseMonkey
 public inline fun <C> GMXmlHttpRequestDetails<C>.eventHandler(builder: EventHandler<C>.() -> Unit) {
-    eventHandler = newJsObject<EventHandler<C>>().apply(builder)
+    eventHandler = jsObject(builder)
 }

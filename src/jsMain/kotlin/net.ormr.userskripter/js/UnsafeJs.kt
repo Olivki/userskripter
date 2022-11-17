@@ -14,20 +14,7 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.engine.tampermonkey
+package net.ormr.userskripter.js
 
-import net.ormr.userskripter.js.UnsafeJs
-import net.ormr.userskripter.js.jsObject
-
-public external interface TMClipboardInfo {
-    public var type: String
-
-    @JsName("mimetype")
-    public var mimeType: String
-}
-
-@OptIn(UnsafeJs::class)
-public fun TMClipboardInfo(type: String, mimeType: String): TMClipboardInfo = jsObject {
-    this.type = type
-    this.mimeType = mimeType
-}
+@RequiresOptIn(message = "Uses unsafe JS dynamic calls / casts")
+public annotation class UnsafeJs

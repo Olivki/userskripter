@@ -20,6 +20,7 @@ import kotlinx.coroutines.await
 import net.ormr.userskripter.engine.ScriptEngineTamperMonkey
 import net.ormr.userskripter.engine.greasemonkey.GrantGMSetClipboard
 import net.ormr.userskripter.engine.greasemonkey.GrantGMXmlHttpRequest
+import net.ormr.userskripter.js.UnsafeJs
 import net.ormr.userskripter.js.jsObject
 
 // we can't define this in 'TMInfo.Script' because @JsName("run-at") is invalid
@@ -36,23 +37,21 @@ public suspend inline fun TamperMonkey.mutateTabObject(scope: dynamic.() -> Unit
     saveTabObject(tabObject).await()
 }
 
+@OptIn(UnsafeJs::class)
 @GrantGMSetClipboard
 @ScriptEngineTamperMonkey
 public suspend inline fun TamperMonkey.setClipboard(data: String, builder: TMClipboardInfo.() -> Unit) {
     setClipboard(data, jsObject(builder)).await()
 }
 
-public fun clipboardInfo(type: String, mimeType: String): TMClipboardInfo = jsObject {
-    this.type = type
-    this.mimeType = mimeType
-}
-
+@OptIn(UnsafeJs::class)
 @GrantGMXmlHttpRequest
 @ScriptEngineTamperMonkey
 public suspend inline fun TamperMonkey.xmlHttpRequest(
     builder: TMXmlHttpRequestDetails<Nothing?>.() -> Unit,
 ): TMXmlHttpRequestResponse<Nothing?> = xmlHttpRequest(jsObject(builder)).await()
 
+@OptIn(UnsafeJs::class)
 @GrantGMXmlHttpRequest
 @ScriptEngineTamperMonkey
 public suspend inline fun <C> TamperMonkey.xmlHttpRequest(
