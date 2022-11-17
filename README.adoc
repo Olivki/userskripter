@@ -1,0 +1,189 @@
+= userskripter
+
+image:https://img.shields.io/maven-central/v/net.ormr.userskripter/userskripter?label=userskripter&style=for-the-badge[Maven Central]
+image:https://img.shields.io/gradle-plugin-portal/v/net.ormr.userskripter.plugin?label=userskripter-gradle&style=for-the-badge[Gradle Plugin Portal]
+
+userskripter is a Kotlin library built to make it easy to create and distribute https://en.wikipedia.org/wiki/Userscript[userscripts] created with Kotlin/JS.
+
+userskripter is split up into two parts, the library _(you are here)_, which provides declarations for engine specific functions and some general utility functions, and the https://github.com/Olivki/userskripter-gradle[gradle plugin], which handles the actual "gluing" of the different parts required to create a single userscript distribution file. The library part is designed to be used alongside the gradle plugin and vice versa, they _can_ be used standalone, but no support will be given for any problems that arise when doing so.
+
+The goal is to create something akin to a framework for creating more advanced userscripts in the future, but at the moment the library is very lightweight.
+
+== Setup
+
+.build.gradle.kts
+[source,kotlin]
+----
+plugins {
+    // ...
+    id("net.ormr.userskripter.plugin") version "${USERSKRIPTER-GRADLE-VERSION}"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // ...
+    implementation("net.ormr.userskripter:userskripter:${USERSKRIPTER-VERSION}")
+}
+----
+
+=== Supported Script Engines
+
+Currently two script engines are supported; https://wiki.greasespot.net/Main_Page[GreaseMonkey] and https://www.tampermonkey.net/[TamperMonkey].
+
+If the engine you want to use isn't supported, falling back to `GreaseMonkey` is the best choice, as all engines will most likely have some sort of backwards compatibility with `GreaseMonkey`.
+
+=== Usage
+
+Creating a userscript is very similar to how one creates a normal Kotlin/JS project, the major difference being that we're going to go through the `userskripter-gradle` plugin to get our `.js` files rather than the standard `compileKotlin` task.
+
+To create the `*.user.js` and `*.meta.js` files invoke the `generateUserscript` task, which will output the files to the `/build/userskripter/` directory. To only generate a specific file, there's the `generateMetaFile` and `generateUserFile` tasks.
+
+==== Gradle Plugin
+
+How the userscript is built can be changed via the `userskript` function, the most important parts being the `id` and `scriptEngine` properties. Unless specified otherwise userskripter will assume you're creating a script to be used with GreaseMonkey and GreaseMonkey compatible engines _(Which should be almost all script engines)_.
+
+===== metadata
+
+To change the https://wiki.greasespot.net/Metadata_Block[metadata block] of the userscript, invoke `metadata` inside of the `userskript` function. Type-safe functions and properties are provided for the supported engines. Unsupported values can be added using the `extra` function. Most properties and functions are documented if needed, if unsure about a certain property, consult the documentation for the engine you're using.
+
+Note that the plugin currently does _not_ verify whether the value you've set in the `metadata` block is actually supported by the engine you're using. It _is_ mentioned in the kdoc of some properties/functions, but defining `connect` for a GreaseMonkey project will not fail the build. This may be changed in the future, so it's recommended to not rely on this lenient behavior for anything.
+
+To see how the metadata block will be serialized, invoke the `printUserscriptMetadata` task and the metadata block will be printed to the terminal.
+
+===== metadataTranspiler
+
+userskripter has support for generating Kotlin code containing the values specified inside of the metadata block by invoking the `generateUserscriptKotlinFile` task.
+
+This feature allows you to access useful metadata values at runtime without having the go through the engine object, as that can be somewhat painful and verbose. For example, to get the description of the userscript _(by default)_ one only needs to invoke `UserscriptMetadata.description` instead of `GreaseMonkey.info.scriptMetadata.description`. It's also useful for accessing values that may not be properly represented in the `info` object returned by the currently used engine.
+
+To configure how the Kotlin code is generated, invoke the `metadataTranspiler` function inside the `userskript` function. All properties for the extension are documented, so no explanation will be provided here.
+
+By default the `metadataTranspiler` will be ran every time `generateUserscript` is ran. To disable this behavior set `runOnGenerate` to `false` in the `metadataTranspiler` block.
+
+`metadataTranspiler` allows you to filter exactly what properties to include in the Kotlin code, by default this is set to only include the following values: `name`, `description`, `version`, `author` and `id`. To change this, pass in a new predicate to `propertyFilter` inside of the `metadataTranspiler` block.
+
+===== *.user.js vs *.meta.js
+
+The `*.user.js` file is the actual userscript file, it contains the metadata block and the actual script code.
+
+The `*.meta.js` file contains _only_ the metadata block, the purpose of this file is to be hosted somewhere so that versions of your userscript that are currently being used can check against it, and see if there's a new version. How version resolution is resolved and how updates are handled are specific to each engine and is therefore not specified here.
+
+Note that if you want to support auto-updates for your script, you'll need to define the `hostedAt` value in the `metadata` block. You can also manually define the `updateUrl` and `downloadUrl` values yourself, but it's recommended to use the `hostedAt` function as it handles it all for you.
+
+For normal script usage the only file you'll care about is the `*.user.js` file.
+
+==== Runtime
+
+Currently the runtime environment of userskripter is very barebones and simple, all that needs to be done to get up and running is to just invoke the `userskript` function inside of `main`:
+
+[source,kotlin]
+----
+suspend fun main() = userskript {
+    // do something
+}
+----
+
+_(Currently the `userskript` function doesn't actually do anything, but for future proofing it's recommended to use this function as the entry point, as later on it will be used as the proper entry point.)_
+
+To use engine specific functions in your script, just call the appropriate engine object _(`GreaseMonkey` or `TamperMonkey`)_ and use any of the functions defined there. Note that all functions require the use of a unique opt-in annotation, you *_SHOULD NOT_* just mark your function with the annotation, and should instead do what the annotation tells you and add a `grant` for the function to your `metadata` block. This is _very_ important, as otherwise while your code will compile, it will not actually run properly as a userscript.
+
+For example, if we want to use the `GreaseMonkey.notification` function we will get an error stating `Specify 'GM.notification' for 'grant' in userskripter.metadata in Gradle`, so to fix this we should adapt our `userskript` block to look like this:
+
+[source,kotlin]
+----
+userskript {
+    metadata {
+        grant("GM.notification")
+    }
+}
+----
+
+After doing this and then loading our Gradle changes, you'll see that the error is now gone, and you can now use the `notifcation` function anywhere we want in the code and it will compile and run like it should.
+
+==== Example
+
+This is a quick example showing how to make a simple userscript that adds a button to https://example.com/[example.com] that creates a new notification when clicked on.
+
+.settings.gradle.kts
+[source,kotlin]
+----
+rootProject.name = "userskripter-example"
+----
+
+.build.gradle.kts
+[source,kotlin]
+----
+plugins {
+    kotlin("js") version "1.7.21"
+    id("net.ormr.userskripter.plugin") version "${USERSKRIPTER-GRADLE-VERSION}"
+}
+
+group = "net.ormr.userskripter"
+version = "1.0-SNAPSHOT"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("net.ormr.userskripter:userskripter:${USERSKRIPTER-VERSION}")
+}
+
+userskript {
+    metadata {
+        matchHostName("example.com")
+        grant("GM.notification")
+    }
+}
+
+kotlin {
+    js(IR) {
+        binaries.executable()
+        browser {
+            commonWebpackConfig {
+                cssSupport {
+                    enabled = true
+                }
+            }
+        }
+    }
+}
+----
+
+./src/main/kotlin/net/ormr/userskripter/example/main.kt
+[source,kotlin]
+----
+package net.ormr.usersrkipter.example
+
+import kotlinx.browser.document
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import net.ormr.userskripter.engine.greasemonkey.GreaseMonkey
+import net.ormr.userskripter.engine.greasemonkey.notification
+import net.ormr.userskripter.userskript
+import net.ormr.userskripter.util.appendNewElement
+import org.w3c.dom.HTMLButtonElement
+import kotlin.coroutines.coroutineContext
+
+suspend fun main() = userskript {
+    val scope = CoroutineScope(coroutineContext)
+    val element = document.querySelector("body > div")!!
+    element.appendNewElement<HTMLButtonElement>("button") {
+        textContent = "Click Me!"
+        onclick = {
+            scope.launch {
+                GreaseMonkey.notification {
+                    text = "This is a notification!"
+                }
+            }
+        }
+    }
+}
+----
+
+This will add a button saying `Click Me!` to the `div` of example.com, and when clicked, the button will create a new notification using the https://wiki.greasespot.net/GM.notification[GreaseMonkey notification function], with `text` being set to `This is a notification!`.
+
+To turn this into a userscript just call the `generateUserscript` task, open the `/build/userskripter/userskripter-example.user.js` file and copy its contents into your script engine of choice, then go to https://example.com/[example.com] and the button should be there under the `More information...` text.
