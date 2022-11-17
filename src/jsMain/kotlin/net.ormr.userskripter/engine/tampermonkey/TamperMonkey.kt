@@ -16,40 +16,51 @@
 
 package net.ormr.userskripter.engine.tampermonkey
 
+import kotlinx.coroutines.await
 import net.ormr.userskripter.engine.ScriptEngineTamperMonkey
 import net.ormr.userskripter.engine.greasemonkey.*
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLStyleElement
 import org.w3c.dom.Node
 import org.w3c.dom.events.Event
-import kotlin.js.Promise
+import net.ormr.userskripter.engine.tampermonkey.PromiseTamperMonkey as TM
 
-@JsName("GM")
 @ScriptEngineTamperMonkey
-public external object TamperMonkey {
-    public val info: TMInfo
+public object TamperMonkey {
+    public inline val info: TMInfo
+        get() = TM.info
 
     @GrantTMAddStyle
-    public fun addStyle(css: String): Promise<HTMLStyleElement>
+    public suspend inline fun addStyle(css: String): HTMLStyleElement = TM.addStyle(css).await()
 
     @GrantTMAddElement
-    public fun addElement(tagName: String, attributes: dynamic): Promise<HTMLElement>
+    public suspend inline fun addElement(tagName: String, attributes: dynamic): HTMLElement =
+        TM.addElement(tagName, attributes).await()
 
     @GrantTMAddElement
-    public fun addElement(parentNode: Node, tagName: String, attributes: dynamic): Promise<HTMLElement>
+    public suspend inline fun addElement(parentNode: Node, tagName: String, attributes: dynamic): HTMLElement =
+        TM.addElement(parentNode, tagName, attributes).await()
 
     // values
     @GrantGMSetValue
-    public fun setValue(name: String, value: dynamic): Promise<Nothing?>
+    public suspend inline fun setValue(name: String, value: dynamic) {
+        TM.setValue(name, value).await()
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @GrantGMGetValue
+    public suspend inline fun <T> getValue(name: String, default: T): T = TM.getValue(name, default).await() as T
 
     @GrantGMGetValue
-    public fun <T> getValue(name: String, default: T = definedExternally): Promise<T?>
+    public suspend inline fun <T> getValue(name: String): T? = TM.getValue<T>(name).await()
 
     @GrantGMDeleteValue
-    public fun deleteValue(name: String): Promise<Nothing?>
+    public suspend inline fun deleteValue(name: String) {
+        TM.deleteValue(name).await()
+    }
 
     @GrantGMListValues
-    public fun listValues(): Promise<Array<String>>
+    public suspend inline fun listValues(): Array<String> = TM.listValues().await()
 
     /**
      * TODO
@@ -57,13 +68,15 @@ public external object TamperMonkey {
      * @return the id of the registered listener, to be used with [removeValueChangeListener]
      */
     @GrantTMAddValueChangeListener
-    public fun addValueChangeListener(
+    public suspend inline fun addValueChangeListener(
         name: String,
-        listener: (name: String, oldValue: dynamic, newValue: dynamic, isRemote: Boolean) -> Unit,
-    ): Promise<Double>
+        noinline listener: (name: String, oldValue: dynamic, newValue: dynamic, isRemote: Boolean) -> Unit,
+    ): Double = TM.addValueChangeListener(name, listener).await()
 
     @GrantTMRemoveValueChangeListener
-    public fun removeValueChangeListener(listenerId: Double): Promise<Nothing?>
+    public suspend inline fun removeValueChangeListener(listenerId: Double) {
+        TM.removeValueChangeListener(listenerId).await()
+    }
 
     // log
     /**
@@ -73,20 +86,22 @@ public external object TamperMonkey {
      * site the script is running at.
      */
     @GrantTMLog
-    public fun log(message: dynamic): Promise<Nothing?>
+    public suspend inline fun log(message: dynamic) {
+        TM.log(message).await()
+    }
 
     // resource
     /**
      * Returns the text content of the `@resource` with the given [name].
      */
     @GrantTMGetResourceText
-    public fun getResourceText(name: String): Promise<String>
+    public suspend inline fun getResourceText(name: String): String = TM.getResourceText(name).await()
 
     /**
      * Returns a Base64 encoded URI of the contents of the `@resource` with the given [name].
      */
     @GrantGMGetResourceUrl
-    public fun getResourceUrl(name: String): Promise<String>
+    public suspend inline fun getResourceUrl(name: String): String = TM.getResourceUrl(name).await()
 
     // menu commands
     /**
@@ -94,20 +109,28 @@ public external object TamperMonkey {
      * @return the id of the registered menu command, to be used with [unregisterMenuCommand]
      */
     @GrantGMRegisterMenuCommand
-    public fun registerMenuCommand(name: String, onSelect: (event: Event) -> Unit, accessKey: Char): Promise<Double>
+    public suspend inline fun registerMenuCommand(
+        name: String,
+        accessKey: Char,
+        noinline onSelect: (event: Event) -> Unit,
+    ): Double = TM.registerMenuCommand(name, onSelect, accessKey).await()
 
     @GrantTMUnregisterMenuCommand
-    public fun unregisterMenuCommand(menuCommandId: Double): Promise<Nothing?>
+    public suspend inline fun unregisterMenuCommand(menuCommandId: Double) {
+        TM.unregisterMenuCommand(menuCommandId).await()
+    }
 
     // tabs
     @GrantGMOpenInTab
-    public fun openInTab(url: String): Promise<TMOpenInTabResult>
+    public suspend inline fun openInTab(url: String): TMOpenInTabResult = TM.openInTab(url).await()
 
     @GrantGMOpenInTab
-    public fun openInTab(url: String, options: TMOpenInTabOptions): Promise<TMOpenInTabResult>
+    public suspend inline fun openInTab(url: String, options: TMOpenInTabOptions): TMOpenInTabResult =
+        TM.openInTab(url, options).await()
 
     @GrantGMOpenInTab
-    public fun openInTab(url: String, loadInBackground: Boolean): Promise<TMOpenInTabResult>
+    public suspend inline fun openInTab(url: String, loadInBackground: Boolean): TMOpenInTabResult =
+        TM.openInTab(url, loadInBackground).await()
 
     // https://stackoverflow.com/a/61639813
 
@@ -115,50 +138,58 @@ public external object TamperMonkey {
      * Returns a JavaScript object that is persistent as long as the current tab is open.
      */
     @GrantTMGetTab
-    @JsName("getTab")
-    public fun getTabObject(): Promise<dynamic>
+    public suspend inline fun getTabObject(): dynamic = TM.getTabObject().await()
 
     @GrantTMSaveTab
-    @JsName("saveTab")
-    public fun saveTabObject(tab: dynamic): Promise<Nothing?>
+    public suspend inline fun saveTabObject(tab: dynamic) {
+        TM.saveTabObject(tab).await()
+    }
 
     @GrantTMGetTabs
-    @JsName("getTabs")
-    public fun getTabObjects(): Promise<dynamic>
+    public suspend inline fun getTabObjects(): dynamic = TM.getTabObjects().await()
 
     // notification
     @GrantGMNotification
-    @JsName("notification")
-    public fun notification(
+    public suspend inline fun notification(
         details: TMNotificationDetails,
-        onDone: () -> Unit = definedExternally,
-    ): Promise<Nothing?>
+        noinline onDone: () -> Unit,
+    ) {
+        TM.notification(details, onDone).await()
+    }
 
     @GrantGMNotification
-    @JsName("notification")
-    public fun notification(
+    public suspend inline fun notification(
         text: String,
-        title: String? = definedExternally,
-        image: String? = definedExternally,
-        onClick: (() -> Unit)? = definedExternally,
-    ): Promise<Nothing?>
+        title: String? = null,
+        image: String? = null,
+        noinline onClick: (() -> Unit)? = null,
+    ) {
+        TM.notification(text, title, image, onClick).await()
+    }
 
     // clipboard
     @GrantGMSetClipboard
-    public fun setClipboard(data: String): Promise<Nothing?>
+    public suspend inline fun setClipboard(data: String) {
+        TM.setClipboard(data).await()
+    }
 
     @GrantGMSetClipboard
-    public fun setClipboard(data: String, info: String): Promise<Nothing?>
+    public suspend inline fun setClipboard(data: String, info: String) {
+        TM.setClipboard(data, info).await()
+    }
 
     @GrantGMSetClipboard
-    public fun setClipboard(data: String, info: TMClipboardInfo): Promise<Nothing?>
+    public suspend inline fun setClipboard(data: String, info: TMClipboardInfo) {
+        TM.setClipboard(data, info).await()
+    }
 
     // xmlHttpRequest
     @GrantGMXmlHttpRequest
-    public fun <C> xmlHttpRequest(details: TMXmlHttpRequestDetails<C>): Promise<TMXmlHttpRequestResponse<C>>
+    public suspend inline fun <C> xmlHttpRequest(details: TMXmlHttpRequestDetails<C>): TMXmlHttpRequestResponse<C> =
+        TM.xmlHttpRequest(details).await()
 
     // download
     // TODO: is this actually the correct signature?..
     @GrantTMDownload
-    public fun download(): Promise<TMXmlHttpRequestResponse<Nothing?>>
+    public suspend inline fun download(): TMXmlHttpRequestResponse<Nothing?> = TM.download().await()
 }
