@@ -16,7 +16,7 @@
 
 @file:Suppress("NOTHING_TO_INLINE")
 
-package net.ormr.userskripter.utils.declarations
+package net.ormr.userskripter.js
 
 public inline fun <T> Array<T>.unshift(element: T): Int = this.asDynamic().unshift(element).unsafeCast<Int>()
 

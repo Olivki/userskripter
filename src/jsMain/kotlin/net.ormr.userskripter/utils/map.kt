@@ -16,7 +16,7 @@
 
 package net.ormr.userskripter.utils
 
-import net.ormr.userskripter.utils.declarations.Object
+import net.ormr.userskripter.js.Object
 
 public fun <K, V> Map<K, V>.toJsObject(): dynamic {
     val obj: dynamic = js("({})")

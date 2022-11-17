@@ -39,10 +39,6 @@ kotlin {
             dependencies {
                 api("org.jetbrains.kotlinx:kotlinx-html:0.7.5")
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-                api("org.kodein.di:kodein-di:7.14.0")
-                api("org.kodein.di:kodein-di-conf:7.14.0")
-                api("net.ormr.kcss:kcss-dsl:0.1.0")
-                api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0-RC")
             }
         }
         val jsTest by getting {

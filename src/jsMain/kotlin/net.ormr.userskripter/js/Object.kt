@@ -16,9 +16,7 @@
 
 @file:Suppress("NOTHING_TO_INLINE")
 
-package net.ormr.userskripter.utils.declarations
-
-import net.ormr.userskripter.utils.SymbolInstance
+package net.ormr.userskripter.js
 
 /**
  * Creates a new JavaScript object cast to the given [T], populated by [builder].

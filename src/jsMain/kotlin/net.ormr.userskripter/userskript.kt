@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package net.ormr.userskripter.settings.properties
+package net.ormr.userskripter
 
-// TODO: better documentation, probably provide some example to make it clearer
-/**
- * Stores and retrieves a `String` value directly, without any decoding done.
- */
-public class RawStringProperty(
-    override val key: String,
-    override val description: String,
-    override val defaultValue: String,
-    override val validator: ((String) -> Unit)? = null,
-) : Property<String>() {
-    override fun encodeToString(value: String): String = value
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
-    override fun decodeFromString(string: String): String = string
+@Suppress("REDUNDANT_INLINE_SUSPEND_FUNCTION_TYPE")
+public suspend inline fun userskript(action: suspend () -> Unit) {
+    contract {
+        callsInPlace(action, InvocationKind.EXACTLY_ONCE)
+    }
+    action()
 }

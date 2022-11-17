@@ -20,7 +20,7 @@ import kotlinx.coroutines.await
 import net.ormr.userskripter.engines.ScriptEngineTamperMonkey
 import net.ormr.userskripter.engines.greasemonkey.GrantGMSetClipboard
 import net.ormr.userskripter.engines.greasemonkey.GrantGMXmlHttpRequest
-import net.ormr.userskripter.utils.declarations.jsObject
+import net.ormr.userskripter.js.jsObject
 
 // we can't define this in 'TMInfo.Script' because @JsName("run-at") is invalid
 public inline val TMInfo.ScriptMetadata.runAt: String

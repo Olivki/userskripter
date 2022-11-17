@@ -18,7 +18,7 @@ package net.ormr.userskripter.engines.greasemonkey
 
 import net.ormr.userskripter.engines.ScriptEngineGreaseMonkey
 import net.ormr.userskripter.engines.greasemonkey.GMXmlHttpRequestDetails.EventHandler
-import net.ormr.userskripter.utils.declarations.newJsObject
+import net.ormr.userskripter.js.newJsObject
 
 @GrantGMNotification
 @ScriptEngineGreaseMonkey

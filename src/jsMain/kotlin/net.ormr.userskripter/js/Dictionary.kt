@@ -16,7 +16,7 @@
 
 @file:Suppress("NOTHING_TO_INLINE")
 
-package net.ormr.userskripter.utils.declarations
+package net.ormr.userskripter.js
 
 public external interface Dictionary<K, V>
 

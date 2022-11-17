@@ -16,7 +16,7 @@
 
 @file:Suppress("FunctionName")
 
-package net.ormr.userskripter.utils
+package net.ormr.userskripter.js
 
 @JsName("Symbol")
 public external interface SymbolInstance {
