@@ -39,7 +39,7 @@ If the engine you want to use isn't supported, falling back to `GreaseMonkey` is
 
 Creating a userscript is very similar to how one creates a normal Kotlin/JS project, the major difference being that we're going to go through the `userskripter-gradle` plugin to get our `.js` files rather than the standard `compileKotlin` task.
 
-To create the `*.user.js` and `*.meta.js` files invoke the `generateUserscript` task, which will output the files to the `/build/userskripter/` directory. To only generate a specific file, there's the `generateMetaFile` and `generateUserFile` tasks.
+To create the `\*.user.js` and `*.meta.js` files invoke the `generateUserscript` task, which will output the files to the `/build/userskripter/` directory. To only generate a specific file, there's the `generateMetaFile` and `generateUserFile` tasks.
 
 ==== Gradle Plugin
 
