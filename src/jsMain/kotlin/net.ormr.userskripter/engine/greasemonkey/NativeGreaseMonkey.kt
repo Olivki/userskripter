@@ -21,7 +21,7 @@ import kotlin.js.Promise
 
 @JsName("GM")
 @ScriptEngineGreaseMonkey
-public external object PromiseGreaseMonkey {
+public external object NativeGreaseMonkey {
     public val info: GMInfo
 
     @GrantGMSetValue

@@ -18,7 +18,7 @@ package net.ormr.userskripter.engine.greasemonkey
 
 import kotlinx.coroutines.await
 import net.ormr.userskripter.engine.ScriptEngineGreaseMonkey
-import net.ormr.userskripter.engine.greasemonkey.PromiseGreaseMonkey as GM
+import net.ormr.userskripter.engine.greasemonkey.NativeGreaseMonkey as GM
 
 @ScriptEngineGreaseMonkey
 public object GreaseMonkey {

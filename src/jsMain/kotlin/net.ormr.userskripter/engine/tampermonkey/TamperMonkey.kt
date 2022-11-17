@@ -23,7 +23,7 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLStyleElement
 import org.w3c.dom.Node
 import org.w3c.dom.events.Event
-import net.ormr.userskripter.engine.tampermonkey.PromiseTamperMonkey as TM
+import net.ormr.userskripter.engine.tampermonkey.NativeTamperMonkey as TM
 
 @ScriptEngineTamperMonkey
 public object TamperMonkey {

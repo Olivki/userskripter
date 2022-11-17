@@ -26,7 +26,7 @@ import kotlin.js.Promise
 
 @JsName("GM")
 @ScriptEngineTamperMonkey
-public external object PromiseTamperMonkey {
+public external object NativeTamperMonkey {
     public val info: TMInfo
 
     @GrantTMAddStyle
