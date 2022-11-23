@@ -16,13 +16,26 @@
 
 package net.ormr.userskripter
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+import kotlin.coroutines.CoroutineContext
 
-@Suppress("REDUNDANT_INLINE_SUSPEND_FUNCTION_TYPE")
-public suspend inline fun userskript(action: suspend () -> Unit) {
+public class Userskript(private val context: CoroutineContext) : CoroutineScope {
+    override val coroutineContext: CoroutineContext
+        get() = context
+}
+
+public inline fun userskript(
+    dispatcher: CoroutineDispatcher = Dispatchers.Default,
+    action: Userskript.() -> Unit,
+) {
     contract {
         callsInPlace(action, InvocationKind.EXACTLY_ONCE)
     }
-    action()
+    with(Userskript(dispatcher)) {
+        action()
+    }
 }
