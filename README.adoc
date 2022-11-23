@@ -5,7 +5,7 @@ image:https://img.shields.io/gradle-plugin-portal/v/net.ormr.userskripter.plugin
 
 userskripter is a Kotlin library built to make it easy to create and distribute https://en.wikipedia.org/wiki/Userscript[userscripts] created with Kotlin/JS.
 
-userskripter is split up into two parts, the library _(you are here)_, which provides declarations for engine specific functions and some general utility functions, and the https://github.com/Olivki/userskripter-gradle[gradle plugin], which handles the actual "gluing" of the different parts required to create a single userscript distribution file. The library part is designed to be used alongside the gradle plugin and vice versa, they _can_ be used standalone, but no support will be given for any problems that arise when doing so.
+userskripter is split up into two parts, the library _(you are here)_, which provides declarations for engine specific functions and some general utility functions, and the https://github.com/userskripter/userskripter-gradle[gradle plugin], which handles the actual "gluing" of the different parts required to create a single userscript distribution file. The library part is designed to be used alongside the gradle plugin and vice versa, they _can_ be used standalone, but no support will be given for any problems that arise when doing so.
 
 The goal is to create something akin to a framework for creating more advanced userscripts in the future, but at the moment the library is very lightweight.
 

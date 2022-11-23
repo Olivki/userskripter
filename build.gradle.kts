@@ -5,7 +5,7 @@ plugins {
 
 group = "net.ormr.userskripter"
 description = "Kotlin/JS library for easily creating userscripts"
-version = "0.2.0"
+version = "0.2.1"
 
 repositories {
     mavenLocal()
@@ -14,7 +14,7 @@ repositories {
 
 mavenCentralPublish {
     useCentralS01()
-    singleDevGithubProject("Olivki", "userskripter")
+    singleDevGithubProject("userskripter", "userskripter")
     licenseApacheV2()
 }
 
