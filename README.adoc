@@ -41,6 +41,16 @@ Creating a userscript is very similar to how one creates a normal Kotlin/JS proj
 
 To create the `\*.user.js` and `*.meta.js` files invoke the `generateUserscript` task, which will output the files to the `/build/userskripter/` directory. To only generate a specific file, there's the `generateMetaFile` and `generateUserFile` tasks.
 
+==== Examples
+
+There exists 2 example projects to showcase how a simple userscript could look when created with userskripter.
+
+https://github.com/userskripter/userskripter-greasemonkey-example[Userskripter GreaseMonkey Example]
+
+https://github.com/userskripter/userskripter-tampermonkey-example[Userskripter TamperMonkey Example] _(recommended)_
+
+It's recommended to develop userscripts for TamperMonkey whenever possible, for various reasons, GreaseMonkey should be considered legacy.
+
 ==== Gradle Plugin
 
 How the userscript is built can be changed via the `userskript` function, the most important parts being the `id` and `scriptEngine` properties. Unless specified otherwise userskripter will assume you're creating a script to be used with GreaseMonkey and GreaseMonkey compatible engines _(Which should be almost all script engines)_.
@@ -86,8 +96,6 @@ suspend fun main() = userskript {
 }
 ----
 
-_(Currently the `userskript` function doesn't actually do anything, but for future proofing it's recommended to use this function as the entry point, as later on it will be used as the proper entry point.)_
-
 To use engine specific functions in your script, just call the appropriate engine object _(`GreaseMonkey` or `TamperMonkey`)_ and use any of the functions defined there. Note that all functions require the use of a unique opt-in annotation, you *_SHOULD NOT_* just mark your function with the annotation, and should instead do what the annotation tells you and add a `grant` for the function to your `metadata` block. This is _very_ important, as otherwise while your code will compile, it will not actually run properly as a userscript.
 
 For example, if we want to use the `GreaseMonkey.notification` function we will get an error stating `Specify 'GM.notification' for 'grant' in userskripter.metadata in Gradle`, so to fix this we should adapt our `userskript` block to look like this:
@@ -102,88 +110,3 @@ userskript {
 ----
 
 After doing this and then loading our Gradle changes, you'll see that the error is now gone, and you can now use the `notifcation` function anywhere we want in the code and it will compile and run like it should.
-
-==== Example
-
-This is a quick example showing how to make a simple userscript that adds a button to https://example.com/[example.com] that creates a new notification when clicked on.
-
-.settings.gradle.kts
-[source,kotlin]
-----
-rootProject.name = "userskripter-example"
-----
-
-.build.gradle.kts
-[source,kotlin]
-----
-plugins {
-    kotlin("js") version "1.7.21"
-    id("net.ormr.userskripter.plugin") version "${USERSKRIPTER-GRADLE-VERSION}"
-}
-
-group = "net.ormr.userskripter"
-version = "1.0-SNAPSHOT"
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation("net.ormr.userskripter:userskripter:${USERSKRIPTER-VERSION}")
-}
-
-userskript {
-    metadata {
-        matchHostName("example.com")
-        grant("GM.notification")
-    }
-}
-
-kotlin {
-    js(IR) {
-        binaries.executable()
-        browser {
-            commonWebpackConfig {
-                cssSupport {
-                    enabled = true
-                }
-            }
-        }
-    }
-}
-----
-
-./src/main/kotlin/net/ormr/userskripter/example/main.kt
-[source,kotlin]
-----
-package net.ormr.usersrkipter.example
-
-import kotlinx.browser.document
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import net.ormr.userskripter.engine.greasemonkey.GreaseMonkey
-import net.ormr.userskripter.engine.greasemonkey.notification
-import net.ormr.userskripter.userskript
-import net.ormr.userskripter.util.appendNewElement
-import org.w3c.dom.HTMLButtonElement
-import kotlin.coroutines.coroutineContext
-
-suspend fun main() = userskript {
-    val scope = CoroutineScope(coroutineContext)
-    val element = document.querySelector("body > div")!!
-    element.appendNewElement<HTMLButtonElement>("button") {
-        textContent = "Click Me!"
-        onclick = {
-            scope.launch {
-                GreaseMonkey.notification {
-                    text = "This is a notification!"
-                }
-            }
-        }
-    }
-}
-----
-
-This will add a button saying `Click Me!` to the `div` of example.com, and when clicked, the button will create a new notification using the https://wiki.greasespot.net/GM.notification[GreaseMonkey notification function], with `text` being set to `This is a notification!`.
-
-To turn this into a userscript just call the `generateUserscript` task, open the `/build/userskripter/userskripter-example.user.js` file and copy its contents into your script engine of choice, then go to https://example.com/[example.com] and the button should be there under the `More information...` text.
