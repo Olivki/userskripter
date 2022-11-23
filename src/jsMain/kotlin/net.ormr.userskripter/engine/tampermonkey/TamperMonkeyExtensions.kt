@@ -18,7 +18,9 @@ package net.ormr.userskripter.engine.tampermonkey
 
 import net.ormr.userskripter.engine.ScriptEngineTamperMonkey
 import net.ormr.userskripter.engine.greasemonkey.GrantGMSetClipboard
+import net.ormr.userskripter.engine.greasemonkey.GrantGMSetClipboardBlocking
 import net.ormr.userskripter.engine.greasemonkey.GrantGMXmlHttpRequest
+import net.ormr.userskripter.engine.greasemonkey.GrantGMXmlHttpRequestBlocking
 import net.ormr.userskripter.js.UnsafeJs
 import net.ormr.userskripter.js.jsObject
 
@@ -29,7 +31,6 @@ public inline val TMInfo.ScriptMetadata.runAt: String
 @GrantTMGetTab
 @GrantTMSaveTab
 @ScriptEngineTamperMonkey
-// TODO: check if this actually works like it should
 public suspend inline fun TamperMonkey.mutateTabObject(scope: dynamic.() -> Unit) {
     val tabObject = getTabObject()
     scope(tabObject)
@@ -54,5 +55,36 @@ public suspend inline fun TamperMonkey.xmlHttpRequest(
 @GrantGMXmlHttpRequest
 @ScriptEngineTamperMonkey
 public suspend inline fun <C> TamperMonkey.xmlHttpRequest(
+    builder: TMXmlHttpRequestDetails<C>.() -> Unit,
+): TMXmlHttpRequestResponse<C> = xmlHttpRequest(jsObject(builder))
+
+// blocking
+@GrantTMGetTabBlocking
+@GrantTMSaveTabBlocking
+@ScriptEngineTamperMonkey
+public inline fun BlockingTamperMonkey.mutateTabObject(scope: dynamic.() -> Unit) {
+    val tabObject = getTabObject()
+    scope(tabObject)
+    saveTabObject(tabObject)
+}
+
+@OptIn(UnsafeJs::class)
+@GrantGMSetClipboardBlocking
+@ScriptEngineTamperMonkey
+public inline fun BlockingTamperMonkey.setClipboard(data: String, builder: TMClipboardInfo.() -> Unit) {
+    setClipboard(data, jsObject(builder))
+}
+
+@OptIn(UnsafeJs::class)
+@GrantGMXmlHttpRequestBlocking
+@ScriptEngineTamperMonkey
+public inline fun BlockingTamperMonkey.xmlHttpRequest(
+    builder: TMXmlHttpRequestDetails<Nothing?>.() -> Unit,
+): TMXmlHttpRequestResponse<Nothing?> = xmlHttpRequest(jsObject(builder))
+
+@OptIn(UnsafeJs::class)
+@GrantGMXmlHttpRequestBlocking
+@ScriptEngineTamperMonkey
+public inline fun <C> BlockingTamperMonkey.xmlHttpRequest(
     builder: TMXmlHttpRequestDetails<C>.() -> Unit,
 ): TMXmlHttpRequestResponse<C> = xmlHttpRequest(jsObject(builder))

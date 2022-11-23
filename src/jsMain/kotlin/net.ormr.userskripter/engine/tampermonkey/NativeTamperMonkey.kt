@@ -158,7 +158,5 @@ public external object NativeTamperMonkey {
     public fun <C> xmlHttpRequest(details: TMXmlHttpRequestDetails<C>): Promise<TMXmlHttpRequestResponse<C>>
 
     // download
-    // TODO: is this actually the correct signature?..
-    @GrantTMDownload
-    public fun download(): Promise<TMXmlHttpRequestResponse<Nothing?>>
+    // TODO: implement download function
 }

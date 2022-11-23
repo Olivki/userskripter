@@ -189,7 +189,5 @@ public object TamperMonkey {
         TM.xmlHttpRequest(details).await()
 
     // download
-    // TODO: is this actually the correct signature?..
-    @GrantTMDownload
-    public suspend inline fun download(): TMXmlHttpRequestResponse<Nothing?> = TM.download().await()
+    // TODO: implement download function
 }
